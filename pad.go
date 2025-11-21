@@ -31,16 +31,25 @@ func NewPad(rect rl.Rectangle) *Pad {
 }
 
 func (p *Pad) Update() {
-	isPressed := gui.Button(p.Rect, "")
-	oldStatus := p.Status
+	gui.Button(p.Rect, "")
+	wasPressed := p.Status == PadStatusPressed
+	isInside := rl.CheckCollisionPointRec(rl.GetMousePosition(), p.Rect)
+	isHeld := isInside && rl.IsMouseButtonDown(rl.MouseButtonLeft)
 
-	if isPressed {
+	if isHeld {
 		p.Status = PadStatusPressed
 	} else {
 		p.Status = PadStatusIdle
 	}
 
-	p.ExecuteActions(oldStatus, p.Status)
+	if wasPressed != isHeld {
+		from := PadStatusIdle
+		to := PadStatusPressed
+		if !isHeld {
+			from, to = PadStatusPressed, PadStatusIdle
+		}
+		p.ExecuteActions(from, to)
+	}
 }
 
 func (p *Pad) ExecuteActions(fromStatus PadStatus, toStatus PadStatus) {
