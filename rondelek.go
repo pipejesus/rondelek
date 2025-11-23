@@ -5,10 +5,20 @@ import (
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/pipejesus/rondelek/sampler"
+	ui "github.com/pipejesus/rondelek/ui"
+)
+
+const (
+	WindowWidth  = 800
+	WindowHeight = 600
+	GridColumns  = 24
+	GridRows     = 24
 )
 
 type App struct {
 	Sampler *sampler.Sampler
+	Pads    []*ui.Pad
+	Grid    *ui.Grid
 }
 
 var app *App
@@ -16,6 +26,8 @@ var app *App
 func init() {
 	app = &App{
 		Sampler: sampler.NewSampler(),
+		Pads:    []*ui.Pad{},
+		Grid:    ui.NewGrid(WindowWidth, WindowHeight, GridColumns, GridRows, 16.0, 16.0),
 	}
 
 	app.Sampler.Init()
@@ -24,26 +36,68 @@ func init() {
 func main() {
 	defer app.Sampler.Quit()
 
+	createMainPads()
+	createFunctionPads()
+
 	rl.InitWindow(800, 600, "Rondelek")
 	rl.SetTargetFPS(60)
 	defer rl.CloseWindow()
 
-	pad := NewPad(rl.Rectangle{X: 10.0, Y: 10.0, Width: 100.0, Height: 100.0})
-	pad.RegisterTransition(PadStatusIdle, PadStatusPressed, func(p *Pad, from, to PadStatus) {
-		fmt.Println("Recording sound!")
-		app.Sampler.Record()
-	})
-	pad.RegisterTransition(PadStatusPressed, PadStatusIdle, func(p *Pad, from, to PadStatus) {
-		fmt.Println("Stopping sound!")
-		app.Sampler.Stop()
-		app.Sampler.FreshSample()
-	})
-
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
-		pad.Update()
+		app.Grid.DrawDebug()
+
+		for _, pad := range app.Pads {
+			pad.Update()
+		}
 
 		rl.EndDrawing()
 	}
+}
+
+func createMainPads() {
+
+	const (
+		realStartRow = 6
+		padsPerAxis  = 4
+		padSizeX     = 3
+		padSizeY     = 4
+		padGap       = 1
+	)
+
+	for rowIdx := range padsPerAxis {
+		startRow := realStartRow + rowIdx*(padSizeY+padGap)
+		endRow := startRow + padSizeY - 1
+
+		for colIdx := range padsPerAxis {
+			startCol := 1 + colIdx*(padSizeX+padGap)
+			endCol := startCol + padSizeX - 1
+
+			pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
+			pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
+				fmt.Println("Recording sound!")
+				app.Sampler.Record()
+			})
+			pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, func(p *ui.Pad, from, to ui.PressStatus) {
+				fmt.Println("Stopping sound!")
+				app.Sampler.Stop()
+				app.Sampler.FreshSample()
+			})
+
+			app.Pads = append(app.Pads, pad)
+		}
+	}
+
+}
+
+func createFunctionPads() {
+	pad := ui.NewPad(app.Grid.Rectangle(17, 19, 6, 9))
+	pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
+		for _, pad := range app.Pads {
+			pad.ToggleMode()
+		}
+	})
+
+	app.Pads = append(app.Pads, pad)
 }

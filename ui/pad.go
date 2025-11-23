@@ -1,24 +1,31 @@
-package main
+package ui
 
 import (
 	gui "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type PadStatus int
+type PressStatus int
+type Mode int
 
 const (
-	PadStatusIdle PadStatus = iota
+	PadStatusIdle PressStatus = iota
 	PadStatusPressed
 )
 
-type PadAction func(p *Pad, from, to PadStatus)
+const (
+	ModePlay Mode = iota
+	ModeRecord
+)
 
-type transitionRegistry map[PadStatus]map[PadStatus][]PadAction
+type PadAction func(p *Pad, from, to PressStatus)
+
+type transitionRegistry map[PressStatus]map[PressStatus][]PadAction
 
 type Pad struct {
 	Rect        rl.Rectangle
-	Status      PadStatus
+	Status      PressStatus
+	Mode        Mode
 	transitions transitionRegistry
 }
 
@@ -26,12 +33,30 @@ func NewPad(rect rl.Rectangle) *Pad {
 	return &Pad{
 		Rect:        rect,
 		Status:      PadStatusIdle,
+		Mode:        ModePlay,
 		transitions: make(transitionRegistry),
 	}
 }
 
+func (p *Pad) Draw() any {
+	if p.Mode == ModePlay {
+		return gui.Button(p.Rect, "")
+	}
+
+	return gui.Button(p.Rect, "REC")
+}
+
+func (p *Pad) ToggleMode() {
+	if p.Mode == ModePlay {
+		p.Mode = ModeRecord
+	} else {
+		p.Mode = ModePlay
+	}
+}
+
 func (p *Pad) Update() {
-	gui.Button(p.Rect, "")
+	p.Draw()
+
 	wasPressed := p.Status == PadStatusPressed
 	isInside := rl.CheckCollisionPointRec(rl.GetMousePosition(), p.Rect)
 	isHeld := isInside && rl.IsMouseButtonDown(rl.MouseButtonLeft)
@@ -52,7 +77,7 @@ func (p *Pad) Update() {
 	}
 }
 
-func (p *Pad) ExecuteActions(fromStatus PadStatus, toStatus PadStatus) {
+func (p *Pad) ExecuteActions(fromStatus PressStatus, toStatus PressStatus) {
 	if fromStatus == toStatus {
 		return
 	}
@@ -63,15 +88,15 @@ func (p *Pad) ExecuteActions(fromStatus PadStatus, toStatus PadStatus) {
 	}
 }
 
-func (p *Pad) RegisterTransition(fromStatus, toStatus PadStatus, action PadAction) {
+func (p *Pad) RegisterTransition(fromStatus, toStatus PressStatus, action PadAction) {
 	p.ensureRegistry()
 	if _, ok := p.transitions[fromStatus]; !ok {
-		p.transitions[fromStatus] = make(map[PadStatus][]PadAction)
+		p.transitions[fromStatus] = make(map[PressStatus][]PadAction)
 	}
 	p.transitions[fromStatus][toStatus] = append(p.transitions[fromStatus][toStatus], action)
 }
 
-func (p *Pad) actionsFor(fromStatus, toStatus PadStatus) []PadAction {
+func (p *Pad) actionsFor(fromStatus, toStatus PressStatus) []PadAction {
 	if p.transitions == nil {
 		return nil
 	}
