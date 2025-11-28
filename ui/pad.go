@@ -27,6 +27,7 @@ type Pad struct {
 	Status      PressStatus
 	Mode        Mode
 	transitions transitionRegistry
+	SampleIdx   int
 }
 
 func NewPad(rect rl.Rectangle) *Pad {
@@ -35,6 +36,7 @@ func NewPad(rect rl.Rectangle) *Pad {
 		Status:      PadStatusIdle,
 		Mode:        ModePlay,
 		transitions: make(transitionRegistry),
+		SampleIdx:   -1,
 	}
 }
 
@@ -44,6 +46,14 @@ func (p *Pad) Draw() any {
 	}
 
 	return gui.Button(p.Rect, "REC")
+}
+
+func (p *Pad) SetSample(samplerIdx int) {
+	p.SampleIdx = samplerIdx
+}
+
+func (p *Pad) HasSample() bool {
+	return p.SampleIdx >= 0
 }
 
 func (p *Pad) ToggleMode() {

@@ -9,6 +9,7 @@ import (
 type Sampler struct {
 	Stream    *portaudio.Stream
 	RecSample *Sample
+	Samples   []*Sample
 }
 
 func (s *Sampler) Init() {
@@ -26,6 +27,10 @@ func (s *Sampler) Init() {
 }
 
 func (s *Sampler) Quit() {
+	if s.RecSample != nil {
+		s.RecSample.Dispose()
+	}
+
 	if err := s.Stream.Close(); err != nil {
 		panic(err)
 	}
@@ -41,11 +46,14 @@ func (s *Sampler) Record() {
 	}
 }
 
-func (s *Sampler) Stop() {
+func (s *Sampler) StopRecording() int {
 	err := s.Stream.Stop()
 	if err != nil {
 		panic(err)
 	}
+
+	s.Samples = append(s.Samples, s.RecSample)
+	return len(s.Samples) - 1
 }
 
 func (s *Sampler) CaptureAudio(in []float32) {
@@ -53,7 +61,11 @@ func (s *Sampler) CaptureAudio(in []float32) {
 }
 
 func (s *Sampler) FreshSample() {
-	s.RecSample.Store()
+	if s.RecSample != nil {
+		_ = s.RecSample.Store()
+		//	s.RecSample.Dispose()
+	}
+
 	s.RecSample = NewSample(NewSampleFileName())
 }
 
@@ -64,5 +76,6 @@ func NewSampleFileName() string {
 func NewSampler() *Sampler {
 	return &Sampler{
 		RecSample: NewSample(NewSampleFileName()),
+		Samples:   []*Sample{},
 	}
 }

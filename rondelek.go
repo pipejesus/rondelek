@@ -39,8 +39,10 @@ func main() {
 	createMainPads()
 	createFunctionPads()
 
-	rl.InitWindow(800, 600, "Rondelek")
+	rl.InitWindow(WindowWidth, WindowHeight, "Rondelek")
+	rl.InitAudioDevice()
 	rl.SetTargetFPS(60)
+	defer rl.CloseAudioDevice()
 	defer rl.CloseWindow()
 
 	for !rl.WindowShouldClose() {
@@ -76,13 +78,28 @@ func createMainPads() {
 
 			pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
 			pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
-				fmt.Println("Recording sound!")
-				app.Sampler.Record()
+				if p.Mode == ui.ModeRecord {
+					fmt.Println("Recording sound!")
+					app.Sampler.Record()
+					return
+				}
+
+				if !p.HasSample() {
+					fmt.Println("No sample assigned to this pad!")
+					return
+				}
+
+				if err := app.Sampler.Samples[p.SampleIdx].Play(); err != nil {
+					fmt.Println("playback error:", err)
+				}
 			})
 			pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, func(p *ui.Pad, from, to ui.PressStatus) {
-				fmt.Println("Stopping sound!")
-				app.Sampler.Stop()
-				app.Sampler.FreshSample()
+				if p.Mode == ui.ModeRecord {
+					fmt.Println("Stopping sound!")
+					sampleIdx := app.Sampler.StopRecording()
+					p.SetSample(sampleIdx)
+					app.Sampler.FreshSample()
+				}
 			})
 
 			app.Pads = append(app.Pads, pad)
