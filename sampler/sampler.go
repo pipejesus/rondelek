@@ -31,6 +31,10 @@ func (s *Sampler) Quit() {
 		s.RecSample.Dispose()
 	}
 
+	for _, sample := range s.Samples {
+		sample.Dispose()
+	}
+
 	if err := s.Stream.Close(); err != nil {
 		panic(err)
 	}

@@ -4,30 +4,34 @@ import (
 	"fmt"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"github.com/octoper/go-ray"
+	_ "github.com/octoper/go-ray"
 	"github.com/pipejesus/rondelek/sampler"
 	ui "github.com/pipejesus/rondelek/ui"
-)
-
-const (
-	WindowWidth  = 800
-	WindowHeight = 600
-	GridColumns  = 24
-	GridRows     = 24
 )
 
 type App struct {
 	Sampler *sampler.Sampler
 	Pads    []*ui.Pad
 	Grid    *ui.Grid
+	Conf    *Config
 }
 
 var app *App
 
 func init() {
+	conf := NewConfig()
+	conf.Load()
+
 	app = &App{
 		Sampler: sampler.NewSampler(),
 		Pads:    []*ui.Pad{},
-		Grid:    ui.NewGrid(WindowWidth, WindowHeight, GridColumns, GridRows, 16.0, 16.0),
+		Grid: ui.NewGrid(
+			conf.Window.Width, conf.Window.Height,
+			conf.Layout.Columns, conf.Layout.Rows,
+			conf.Layout.PaddingX, conf.Layout.PaddingY,
+		),
+		Conf: conf,
 	}
 
 	app.Sampler.Init()
@@ -39,7 +43,7 @@ func main() {
 	createMainPads()
 	createFunctionPads()
 
-	rl.InitWindow(WindowWidth, WindowHeight, "Rondelek")
+	rl.InitWindow(int32(app.Conf.Window.Width), int32(app.Conf.Window.Height), "Rondelek TWST-1")
 	rl.InitAudioDevice()
 	rl.SetTargetFPS(60)
 	defer rl.CloseAudioDevice()
@@ -75,6 +79,9 @@ func createMainPads() {
 		for colIdx := range padsPerAxis {
 			startCol := 1 + colIdx*(padSizeX+padGap)
 			endCol := startCol + padSizeX - 1
+
+			positionAsString := fmt.Sprintf("%d Col start: %d Row start: %d", colIdx, startCol, startRow)
+			ray.Ray(positionAsString)
 
 			pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
 			pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
