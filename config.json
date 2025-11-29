@@ -11,7 +11,7 @@
   },
   "pads": [
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-1",
       "label": "1",
       "key": "1",
@@ -19,7 +19,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-2",
       "label": "2",
       "key": "2",
@@ -27,7 +27,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-3",
       "label": "3",
       "key": "3",
@@ -35,7 +35,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-4",
       "label": "4",
       "key": "4",
@@ -43,7 +43,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-q",
       "label": "Q",
       "key": "q",
@@ -51,7 +51,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-w",
       "label": "W",
       "key": "w",
@@ -59,7 +59,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-e",
       "label": "E",
       "key": "e",
@@ -67,7 +67,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-r",
       "label": "R",
       "key": "r",
@@ -75,7 +75,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-a",
       "label": "A",
       "key": "a",
@@ -83,7 +83,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-s",
       "label": "S",
       "key": "s",
@@ -91,7 +91,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-d",
       "label": "D",
       "key": "d",
@@ -99,7 +99,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-f",
       "label": "F",
       "key": "f",
@@ -107,7 +107,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-z",
       "label": "Z",
       "key": "z",
@@ -115,7 +115,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-x",
       "label": "X",
       "key": "x",
@@ -123,7 +123,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-c",
       "label": "C",
       "key": "c",
@@ -131,7 +131,7 @@
       "size": { "width": 3, "height": 4 }
     },
     {
-      "type": "sample",
+      "type": "sample-pad",
       "id": "input-v",
       "label": "V",
       "key": "v",

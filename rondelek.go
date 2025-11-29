@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
-	"github.com/octoper/go-ray"
 	_ "github.com/octoper/go-ray"
 	"github.com/pipejesus/rondelek/sampler"
 	ui "github.com/pipejesus/rondelek/ui"
@@ -63,56 +60,22 @@ func main() {
 }
 
 func createMainPads() {
-
-	const (
-		realStartRow = 6
-		padsPerAxis  = 4
-		padSizeX     = 3
-		padSizeY     = 4
-		padGap       = 1
-	)
-
-	for rowIdx := range padsPerAxis {
-		startRow := realStartRow + rowIdx*(padSizeY+padGap)
-		endRow := startRow + padSizeY - 1
-
-		for colIdx := range padsPerAxis {
-			startCol := 1 + colIdx*(padSizeX+padGap)
-			endCol := startCol + padSizeX - 1
-
-			positionAsString := fmt.Sprintf("%d Col start: %d Row start: %d", colIdx, startCol, startRow)
-			ray.Ray(positionAsString)
-
-			pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
-			pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
-				if p.Mode == ui.ModeRecord {
-					fmt.Println("Recording sound!")
-					app.Sampler.Record()
-					return
-				}
-
-				if !p.HasSample() {
-					fmt.Println("No sample assigned to this pad!")
-					return
-				}
-
-				if err := app.Sampler.Samples[p.SampleIdx].Play(); err != nil {
-					fmt.Println("playback error:", err)
-				}
-			})
-			pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, func(p *ui.Pad, from, to ui.PressStatus) {
-				if p.Mode == ui.ModeRecord {
-					fmt.Println("Stopping sound!")
-					sampleIdx := app.Sampler.StopRecording()
-					p.SetSample(sampleIdx)
-					app.Sampler.FreshSample()
-				}
-			})
-
-			app.Pads = append(app.Pads, pad)
+	for _, padConf := range app.Conf.Pads {
+		if padConf.Type != "sample-pad" {
+			continue
 		}
-	}
 
+		startCol := padConf.PadPosition.Col
+		endCol := startCol + padConf.PadSize.Width - 1
+		startRow := padConf.PadPosition.Row
+		endRow := startRow + padConf.PadSize.Height - 1
+
+		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
+		pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, transitionPadIdleToPressed)
+		pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, transitionPadPressedToIdle)
+
+		app.Pads = append(app.Pads, pad)
+	}
 }
 
 func createFunctionPads() {
