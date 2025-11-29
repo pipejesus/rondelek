@@ -28,6 +28,6 @@ func transitionPadPressedToIdle(p *ui.Pad, from, to ui.PressStatus) {
 		fmt.Println("Stopping sound!")
 		sampleIdx := app.Sampler.StopRecording()
 		p.SetSample(sampleIdx)
-		app.Sampler.FreshSample()
+		app.Sampler.SaveCurrentSample()
 	}
 }

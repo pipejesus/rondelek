@@ -7,9 +7,10 @@ import (
 )
 
 type Sampler struct {
-	Stream    *portaudio.Stream
-	RecSample *Sample
-	Samples   []*Sample
+	Stream      *portaudio.Stream
+	RecSample   *Sample
+	Samples     []*Sample
+	isRecording bool
 }
 
 func (s *Sampler) Init() {
@@ -24,6 +25,12 @@ func (s *Sampler) Init() {
 	}
 
 	s.Stream = stream
+
+	// Start the stream once during initialization; keep it running so we don't
+	// have to warm it up for the first recording.
+	if err := s.Stream.Start(); err != nil {
+		panic(err)
+	}
 }
 
 func (s *Sampler) Quit() {
@@ -35,8 +42,11 @@ func (s *Sampler) Quit() {
 		sample.Dispose()
 	}
 
-	if err := s.Stream.Close(); err != nil {
-		panic(err)
+	if s.Stream != nil {
+		_ = s.Stream.Stop()
+		if err := s.Stream.Close(); err != nil {
+			panic(err)
+		}
 	}
 
 	if err := portaudio.Terminate(); err != nil {
@@ -45,32 +55,31 @@ func (s *Sampler) Quit() {
 }
 
 func (s *Sampler) Record() {
-	if err := s.Stream.Start(); err != nil {
-		panic(err)
-	}
+	s.RecSample = NewSample(NewSampleFileName())
+	s.isRecording = true
 }
 
 func (s *Sampler) StopRecording() int {
-	err := s.Stream.Stop()
-	if err != nil {
-		panic(err)
-	}
-
+	s.isRecording = false
 	s.Samples = append(s.Samples, s.RecSample)
 	return len(s.Samples) - 1
 }
 
 func (s *Sampler) CaptureAudio(in []float32) {
+	if !s.isRecording || s.RecSample == nil {
+		return
+	}
+
+	s.RecSample.mu.Lock()
 	s.RecSample.Buf = append(s.RecSample.Buf, in...)
+	s.RecSample.mu.Unlock()
 }
 
-func (s *Sampler) FreshSample() {
+func (s *Sampler) SaveCurrentSample() {
 	if s.RecSample != nil {
 		_ = s.RecSample.Store()
 		s.RecSample.Dispose()
 	}
-
-	s.RecSample = NewSample(NewSampleFileName())
 }
 
 func NewSampleFileName() string {
