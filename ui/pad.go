@@ -28,15 +28,17 @@ type Pad struct {
 	Mode        Mode
 	transitions transitionRegistry
 	SampleIdx   int
+	Key         int32
 }
 
-func NewPad(rect rl.Rectangle) *Pad {
+func NewPad(rect rl.Rectangle, key int32) *Pad {
 	return &Pad{
 		Rect:        rect,
 		Status:      PadStatusIdle,
 		Mode:        ModePlay,
 		transitions: make(transitionRegistry),
 		SampleIdx:   -1,
+		Key:         key,
 	}
 }
 
@@ -69,7 +71,11 @@ func (p *Pad) Update() {
 
 	wasPressed := p.Status == PadStatusPressed
 	isInside := rl.CheckCollisionPointRec(rl.GetMousePosition(), p.Rect)
-	isHeld := isInside && rl.IsMouseButtonDown(rl.MouseButtonLeft)
+
+	isHeldByMouse := isInside && rl.IsMouseButtonDown(rl.MouseButtonLeft)
+
+	isHeldByKeyboard := rl.IsKeyDown(p.Key)
+	isHeld := isHeldByMouse || isHeldByKeyboard
 
 	if isHeld {
 		p.Status = PadStatusPressed

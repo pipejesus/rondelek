@@ -14,7 +14,7 @@
       "type": "sample-pad",
       "id": "input-1",
       "label": "1",
-      "key": "1",
+      "key": 49,
       "position": { "col": 1, "row": 6 },
       "size": { "width": 3, "height": 4 }
     },
@@ -22,7 +22,7 @@
       "type": "sample-pad",
       "id": "input-2",
       "label": "2",
-      "key": "2",
+      "key": 50,
       "position": { "col": 5, "row": 6 },
       "size": { "width": 3, "height": 4 }
     },
@@ -30,7 +30,7 @@
       "type": "sample-pad",
       "id": "input-3",
       "label": "3",
-      "key": "3",
+      "key": 51,
       "position": { "col": 9, "row": 6 },
       "size": { "width": 3, "height": 4 }
     },
@@ -38,7 +38,7 @@
       "type": "sample-pad",
       "id": "input-4",
       "label": "4",
-      "key": "4",
+      "key": 52,
       "position": { "col": 13, "row": 6 },
       "size": { "width": 3, "height": 4 }
     },
@@ -46,7 +46,7 @@
       "type": "sample-pad",
       "id": "input-q",
       "label": "Q",
-      "key": "q",
+      "key": 81,
       "position": { "col": 1, "row": 11 },
       "size": { "width": 3, "height": 4 }
     },
@@ -54,7 +54,7 @@
       "type": "sample-pad",
       "id": "input-w",
       "label": "W",
-      "key": "w",
+      "key": 87,
       "position": { "col": 5, "row": 11 },
       "size": { "width": 3, "height": 4 }
     },
@@ -62,7 +62,7 @@
       "type": "sample-pad",
       "id": "input-e",
       "label": "E",
-      "key": "e",
+      "key": 69,
       "position": { "col": 9, "row": 11 },
       "size": { "width": 3, "height": 4 }
     },
@@ -70,7 +70,7 @@
       "type": "sample-pad",
       "id": "input-r",
       "label": "R",
-      "key": "r",
+      "key": 82,
       "position": { "col": 13, "row": 11 },
       "size": { "width": 3, "height": 4 }
     },
@@ -78,7 +78,7 @@
       "type": "sample-pad",
       "id": "input-a",
       "label": "A",
-      "key": "a",
+      "key": 65,
       "position": { "col": 1, "row": 16 },
       "size": { "width": 3, "height": 4 }
     },
@@ -86,7 +86,7 @@
       "type": "sample-pad",
       "id": "input-s",
       "label": "S",
-      "key": "s",
+      "key": 83,
       "position": { "col": 5, "row": 16 },
       "size": { "width": 3, "height": 4 }
     },
@@ -94,7 +94,7 @@
       "type": "sample-pad",
       "id": "input-d",
       "label": "D",
-      "key": "d",
+      "key": 68,
       "position": { "col": 9, "row": 16 },
       "size": { "width": 3, "height": 4 }
     },
@@ -102,7 +102,7 @@
       "type": "sample-pad",
       "id": "input-f",
       "label": "F",
-      "key": "f",
+      "key": 70,
       "position": { "col": 13, "row": 16 },
       "size": { "width": 3, "height": 4 }
     },
@@ -110,7 +110,7 @@
       "type": "sample-pad",
       "id": "input-z",
       "label": "Z",
-      "key": "z",
+      "key": 90,
       "position": { "col": 1, "row": 21 },
       "size": { "width": 3, "height": 4 }
     },
@@ -118,7 +118,7 @@
       "type": "sample-pad",
       "id": "input-x",
       "label": "X",
-      "key": "x",
+      "key": 88,
       "position": { "col": 5, "row": 21 },
       "size": { "width": 3, "height": 4 }
     },
@@ -126,7 +126,7 @@
       "type": "sample-pad",
       "id": "input-c",
       "label": "C",
-      "key": "c",
+      "key": 67,
       "position": { "col": 9, "row": 21 },
       "size": { "width": 3, "height": 4 }
     },
@@ -134,7 +134,7 @@
       "type": "sample-pad",
       "id": "input-v",
       "label": "V",
-      "key": "v",
+      "key": 86,
       "position": { "col": 13, "row": 21 },
       "size": { "width": 3, "height": 4 }
     }

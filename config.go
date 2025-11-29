@@ -29,7 +29,7 @@ type PadConfig struct {
 	Type        string      `json:"type"`
 	ID          string      `json:"id"`
 	Label       string      `json:"label"`
-	Key         string      `json:"key"`
+	Key         int32       `json:"key"`
 	PadPosition PadPosition `json:"position"`
 	PadSize     PadSize     `json:"size"`
 }

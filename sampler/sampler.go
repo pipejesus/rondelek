@@ -67,7 +67,7 @@ func (s *Sampler) CaptureAudio(in []float32) {
 func (s *Sampler) FreshSample() {
 	if s.RecSample != nil {
 		_ = s.RecSample.Store()
-		//	s.RecSample.Dispose()
+		s.RecSample.Dispose()
 	}
 
 	s.RecSample = NewSample(NewSampleFileName())

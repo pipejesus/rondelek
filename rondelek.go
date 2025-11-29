@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 	_ "github.com/octoper/go-ray"
 	"github.com/pipejesus/rondelek/sampler"
@@ -37,6 +39,12 @@ func init() {
 func main() {
 	defer app.Sampler.Quit()
 
+	for i, key := range []int32{rl.KeyOne, rl.KeyTwo, rl.KeyThree, rl.KeyFour,
+		rl.KeyQ, rl.KeyW, rl.KeyE, rl.KeyR,
+		rl.KeyA, rl.KeyS, rl.KeyD, rl.KeyF,
+		rl.KeyZ, rl.KeyX, rl.KeyC, rl.KeyV} {
+		fmt.Printf("%d: %d\n", i+1, key)
+	}
 	createMainPads()
 	createFunctionPads()
 
@@ -70,7 +78,7 @@ func createMainPads() {
 		startRow := padConf.PadPosition.Row
 		endRow := startRow + padConf.PadSize.Height - 1
 
-		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow))
+		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow), padConf.Key)
 		pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, transitionPadIdleToPressed)
 		pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, transitionPadPressedToIdle)
 
@@ -79,7 +87,7 @@ func createMainPads() {
 }
 
 func createFunctionPads() {
-	pad := ui.NewPad(app.Grid.Rectangle(17, 19, 6, 9))
+	pad := ui.NewPad(app.Grid.Rectangle(17, 19, 6, 9), rl.KeySpace)
 	pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
 		for _, pad := range app.Pads {
 			pad.ToggleMode()
