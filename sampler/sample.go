@@ -3,6 +3,7 @@ package sampler
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/go-audio/audio"
@@ -24,6 +25,7 @@ type Sample struct {
 	sound             rl.Sound
 	soundLoaded       bool
 	cachedSampleCount int
+	mu                sync.Mutex
 }
 
 func (t *Sample) Store() error {
