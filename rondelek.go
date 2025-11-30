@@ -58,6 +58,7 @@ func main() {
 		rl.ClearBackground(rl.White)
 
 		ui.DrawCase(app.Grid)
+		ui.DrawScreen(app.Grid)
 		// app.Grid.DrawDebug()
 		for _, pad := range app.Pads {
 			pad.Update()
@@ -87,7 +88,7 @@ func createMainPads() {
 }
 
 func createFunctionPads() {
-	pad := ui.NewPad(app.Grid.Rectangle(17, 21, 6, 9), rl.KeySpace, "PLAY/REC")
+	pad := ui.NewPad(app.Grid.Rectangle(22, 23, 9, 9), rl.KeySpace, "*")
 	pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
 		for _, pad := range app.Pads {
 			pad.ToggleMode()

@@ -69,3 +69,8 @@ func DrawCase(grid *Grid) {
 	rl.DrawRectangleRoundedLines(panelRect, roundMd, 1, panelStroke)
 
 }
+
+func DrawScreen(grid *Grid) {
+	screen := grid.Rectangle(1, grid.Columns, 3, 6)
+	rl.DrawRectangleRec(screen, rl.Black)
+}
