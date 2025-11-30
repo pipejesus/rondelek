@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"math"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	_ "github.com/octoper/go-ray"
@@ -39,25 +39,56 @@ func init() {
 func main() {
 	defer app.Sampler.Quit()
 
-	for i, key := range []int32{rl.KeyOne, rl.KeyTwo, rl.KeyThree, rl.KeyFour,
-		rl.KeyQ, rl.KeyW, rl.KeyE, rl.KeyR,
-		rl.KeyA, rl.KeyS, rl.KeyD, rl.KeyF,
-		rl.KeyZ, rl.KeyX, rl.KeyC, rl.KeyV} {
-		fmt.Printf("%d: %d\n", i+1, key)
-	}
 	createMainPads()
 	createFunctionPads()
 
+	rl.SetConfigFlags(rl.FlagWindowUndecorated /*| rl.FlagWindowTransparent*/)
 	rl.InitWindow(int32(app.Conf.Window.Width), int32(app.Conf.Window.Height), "Rondelek TWST-1")
 	rl.InitAudioDevice()
 	rl.SetTargetFPS(60)
+
 	defer rl.CloseAudioDevice()
 	defer rl.CloseWindow()
 
+	dragging := false
+	var dragStart rl.Vector2
+
+	isPointerOverUI := func() bool {
+		mouse := rl.GetMousePosition()
+		for _, pad := range app.Pads {
+			if rl.CheckCollisionPointRec(mouse, pad.Rect) {
+				return true
+			}
+		}
+		return false
+	}
+
 	for !rl.WindowShouldClose() {
+
+		if rl.IsMouseButtonPressed(rl.MouseLeftButton) && !isPointerOverUI() {
+			dragging = true
+			dragStart = rl.GetMousePosition()
+
+		}
+
+		if dragging && rl.IsMouseButtonDown(rl.MouseLeftButton) {
+			curr := rl.GetMousePosition()
+			currWin := rl.GetWindowPosition()
+			dx := curr.X - dragStart.X
+			dy := curr.Y - dragStart.Y
+			if math.Abs(float64(dx)) >= 1 || math.Abs(float64(dy)) >= 1 {
+				rl.SetWindowPosition(int(currWin.X+dx), int(currWin.Y+dy))
+			}
+		}
+
+		if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+			dragging = false
+		}
+
 		rl.BeginDrawing()
-		rl.ClearBackground(rl.RayWhite)
-		app.Grid.DrawDebug()
+		// rl.ClearBackground(rl.Black)
+		// app.Grid.DrawDebug()
+		ui.DrawCase()
 
 		for _, pad := range app.Pads {
 			pad.Update()

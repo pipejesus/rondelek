@@ -22,7 +22,7 @@ var (
 	ledColorFull  = rl.Color{R: 250, G: 50, B: 0, A: 255}
 	shadowColor   = rl.Color{R: 160, G: 156, B: 150, A: 110}
 	innerPadding  = float32(16)
-	roundMd       = float32(0.016)
+	roundMd       = float32(0.032)
 )
 
 func DrawSamplePad(p *Pad) {
@@ -56,4 +56,27 @@ func DrawSamplePad(p *Pad) {
 	}
 
 	rl.DrawCircle(int32(btn.X+btn.Width-20), int32(btn.Y+20), 6, ledColor)
+}
+
+func DrawCase() {
+	width := float32(rl.GetScreenWidth())
+	height := float32(rl.GetScreenHeight())
+
+	// rl.ClearBackground(bgColor)
+	margin := float32(0)
+	panelRect := rl.Rectangle{
+		X:      margin,
+		Y:      margin,
+		Width:  width - margin*2,
+		Height: height - margin*2,
+	}
+
+	shadowRect := panelRect
+	shadowRect.X += 16
+	shadowRect.Y += 16
+	rl.DrawRectangleRounded(shadowRect, roundMd, 1, shadowColor)
+
+	rl.DrawRectangleRounded(panelRect, roundMd, 1, panelColor)
+	// rl.DrawRectangleRoundedLines(panelRect, roundMd, 1, panelStroke)
+
 }
