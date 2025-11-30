@@ -78,7 +78,7 @@ func createMainPads() {
 		startRow := padConf.PadPosition.Row
 		endRow := startRow + padConf.PadSize.Height - 1
 
-		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow), padConf.Key)
+		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow), padConf.Key, padConf.Label)
 		pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, transitionPadIdleToPressed)
 		pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, transitionPadPressedToIdle)
 
@@ -87,7 +87,7 @@ func createMainPads() {
 }
 
 func createFunctionPads() {
-	pad := ui.NewPad(app.Grid.Rectangle(17, 19, 6, 9), rl.KeySpace)
+	pad := ui.NewPad(app.Grid.Rectangle(17, 21, 6, 9), rl.KeySpace, "PLAY/REC")
 	pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
 		for _, pad := range app.Pads {
 			pad.ToggleMode()

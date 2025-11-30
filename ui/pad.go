@@ -1,7 +1,6 @@
 package ui
 
 import (
-	gui "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -29,9 +28,10 @@ type Pad struct {
 	transitions transitionRegistry
 	SampleIdx   int
 	Key         int32
+	Label       string
 }
 
-func NewPad(rect rl.Rectangle, key int32) *Pad {
+func NewPad(rect rl.Rectangle, key int32, label string) *Pad {
 	return &Pad{
 		Rect:        rect,
 		Status:      PadStatusIdle,
@@ -39,15 +39,12 @@ func NewPad(rect rl.Rectangle, key int32) *Pad {
 		transitions: make(transitionRegistry),
 		SampleIdx:   -1,
 		Key:         key,
+		Label:       label,
 	}
 }
 
-func (p *Pad) Draw() any {
-	if p.Mode == ModePlay {
-		return gui.Button(p.Rect, "")
-	}
-
-	return gui.Button(p.Rect, "REC")
+func (p *Pad) Draw() {
+	DrawSamplePad(p)
 }
 
 func (p *Pad) SetSample(samplerIdx int) {
