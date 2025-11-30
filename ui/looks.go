@@ -58,25 +58,14 @@ func DrawSamplePad(p *Pad) {
 	rl.DrawCircle(int32(btn.X+btn.Width-20), int32(btn.Y+20), 6, ledColor)
 }
 
-func DrawCase() {
-	width := float32(rl.GetScreenWidth())
-	height := float32(rl.GetScreenHeight())
-
-	// rl.ClearBackground(bgColor)
-	margin := float32(0)
-	panelRect := rl.Rectangle{
-		X:      margin,
-		Y:      margin,
-		Width:  width - margin*2,
-		Height: height - margin*2,
-	}
-
+func DrawCase(grid *Grid) {
+	panelRect := grid.Rectangle(1, grid.Columns, 1, grid.Rows)
 	shadowRect := panelRect
 	shadowRect.X += 16
 	shadowRect.Y += 16
 	rl.DrawRectangleRounded(shadowRect, roundMd, 1, shadowColor)
 
 	rl.DrawRectangleRounded(panelRect, roundMd, 1, panelColor)
-	// rl.DrawRectangleRoundedLines(panelRect, roundMd, 1, panelStroke)
+	rl.DrawRectangleRoundedLines(panelRect, roundMd, 1, panelStroke)
 
 }

@@ -37,7 +37,7 @@ func (g *Grid) DrawDebug() {
 
 	const dashSize = 8.0
 	const thickness = 1.0
-	color := rl.Fade(rl.LightGray, 0.7)
+	color := rl.Fade(rl.Green, 0.5)
 
 	for col := 0; col <= g.Columns; col++ {
 		x := left + float32(col)*cellWidth

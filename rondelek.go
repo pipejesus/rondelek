@@ -1,10 +1,9 @@
 package main
 
 import (
-	"math"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 	_ "github.com/octoper/go-ray"
+	"github.com/pipejesus/rondelek/experiments"
 	"github.com/pipejesus/rondelek/sampler"
 	ui "github.com/pipejesus/rondelek/ui"
 )
@@ -42,54 +41,24 @@ func main() {
 	createMainPads()
 	createFunctionPads()
 
-	rl.SetConfigFlags(rl.FlagWindowUndecorated /*| rl.FlagWindowTransparent*/)
+	experiments.SetupShapedWindow(app.Pads)
+
 	rl.InitWindow(int32(app.Conf.Window.Width), int32(app.Conf.Window.Height), "Rondelek TWST-1")
+	experiments.SetupFullScreenWindow()
 	rl.InitAudioDevice()
 	rl.SetTargetFPS(60)
 
 	defer rl.CloseAudioDevice()
 	defer rl.CloseWindow()
 
-	dragging := false
-	var dragStart rl.Vector2
-
-	isPointerOverUI := func() bool {
-		mouse := rl.GetMousePosition()
-		for _, pad := range app.Pads {
-			if rl.CheckCollisionPointRec(mouse, pad.Rect) {
-				return true
-			}
-		}
-		return false
-	}
-
 	for !rl.WindowShouldClose() {
-
-		if rl.IsMouseButtonPressed(rl.MouseLeftButton) && !isPointerOverUI() {
-			dragging = true
-			dragStart = rl.GetMousePosition()
-
-		}
-
-		if dragging && rl.IsMouseButtonDown(rl.MouseLeftButton) {
-			curr := rl.GetMousePosition()
-			currWin := rl.GetWindowPosition()
-			dx := curr.X - dragStart.X
-			dy := curr.Y - dragStart.Y
-			if math.Abs(float64(dx)) >= 1 || math.Abs(float64(dy)) >= 1 {
-				rl.SetWindowPosition(int(currWin.X+dx), int(currWin.Y+dy))
-			}
-		}
-
-		if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
-			dragging = false
-		}
+		experiments.HandleWindowDragging()
 
 		rl.BeginDrawing()
-		// rl.ClearBackground(rl.Black)
-		// app.Grid.DrawDebug()
-		ui.DrawCase()
+		rl.ClearBackground(rl.White)
 
+		ui.DrawCase(app.Grid)
+		// app.Grid.DrawDebug()
 		for _, pad := range app.Pads {
 			pad.Update()
 		}
