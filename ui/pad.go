@@ -44,7 +44,36 @@ func NewPad(rect rl.Rectangle, key int32, label string) *Pad {
 }
 
 func (p *Pad) Draw() {
-	DrawSamplePad(p)
+	shadow := p.Rect
+	btn := p.Rect
+	shadow.X += 4
+	shadow.Y += 4
+
+	if p.Status == PadStatusIdle {
+		rl.DrawRectangleRounded(shadow, 0.08, 16, padShadowColor)
+	}
+
+	if p.Status == PadStatusPressed {
+		btn.X += 2
+		btn.Y += 2
+	}
+
+	var fill, labelColor = padFillPlay, padLabelPlay
+	if p.Mode == ModeRecord {
+		fill, labelColor = padFillRecord, padLabelRecord
+	}
+
+	rl.DrawRectangleRounded(btn, 0.08, 16, fill)
+	rl.DrawRectangleRoundedLines(btn, 0.08, 16, panelStroke)
+
+	rl.DrawText(p.Label, int32(btn.X+12), int32(btn.Y+12), 20, labelColor)
+
+	ledColor := ledColorEmpty
+	if p.HasSample() {
+		ledColor = ledColorFull
+	}
+
+	rl.DrawCircle(int32(btn.X+btn.Width-20), int32(btn.Y+20), 6, ledColor)
 }
 
 func (p *Pad) SetSample(samplerIdx int) {
@@ -102,7 +131,6 @@ func (p *Pad) ExecuteActions(fromStatus PressStatus, toStatus PressStatus) {
 }
 
 func (p *Pad) RegisterTransition(fromStatus, toStatus PressStatus, action PadAction) {
-	p.ensureRegistry()
 	if _, ok := p.transitions[fromStatus]; !ok {
 		p.transitions[fromStatus] = make(map[PressStatus][]PadAction)
 	}
@@ -117,10 +145,4 @@ func (p *Pad) actionsFor(fromStatus, toStatus PressStatus) []PadAction {
 		return toMap[toStatus]
 	}
 	return nil
-}
-
-func (p *Pad) ensureRegistry() {
-	if p.transitions == nil {
-		p.transitions = make(transitionRegistry)
-	}
 }

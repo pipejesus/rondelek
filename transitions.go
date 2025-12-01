@@ -8,13 +8,11 @@ import (
 
 func transitionPadIdleToPressed(p *ui.Pad, from, to ui.PressStatus) {
 	if p.Mode == ui.ModeRecord {
-		fmt.Println("Recording sound!")
 		app.Sampler.Record()
 		return
 	}
 
 	if !p.HasSample() {
-		fmt.Println("No sample assigned to this pad!")
 		return
 	}
 

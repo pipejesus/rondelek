@@ -25,39 +25,6 @@ var (
 	roundMd       = float32(0.032)
 )
 
-func DrawSamplePad(p *Pad) {
-	shadow := p.Rect
-	btn := p.Rect
-	shadow.X += 4
-	shadow.Y += 4
-
-	if p.Status == PadStatusIdle {
-		rl.DrawRectangleRounded(shadow, 0.08, 16, padShadowColor)
-	}
-
-	if p.Status == PadStatusPressed {
-		btn.X += 2
-		btn.Y += 2
-	}
-
-	var fill, labelColor = padFillPlay, padLabelPlay
-	if p.Mode == ModeRecord {
-		fill, labelColor = padFillRecord, padLabelRecord
-	}
-
-	rl.DrawRectangleRounded(btn, 0.08, 16, fill)
-	rl.DrawRectangleRoundedLines(btn, 0.08, 16, panelStroke)
-
-	rl.DrawText(p.Label, int32(btn.X+12), int32(btn.Y+12), 20, labelColor)
-
-	ledColor := ledColorEmpty
-	if p.HasSample() {
-		ledColor = ledColorFull
-	}
-
-	rl.DrawCircle(int32(btn.X+btn.Width-20), int32(btn.Y+20), 6, ledColor)
-}
-
 func DrawCase(grid *Grid) {
 	panelRect := grid.Rectangle(1, grid.Columns, 1, grid.Rows)
 	shadowRect := panelRect
@@ -71,6 +38,6 @@ func DrawCase(grid *Grid) {
 }
 
 func DrawScreen(grid *Grid) {
-	screen := grid.Rectangle(1, grid.Columns, 3, 6)
+	screen := grid.Rectangle(1, grid.Columns, 2, 6)
 	rl.DrawRectangleRec(screen, rl.Black)
 }
