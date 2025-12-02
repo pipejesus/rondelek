@@ -2,6 +2,7 @@ package ui
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"github.com/pipejesus/rondelek/providers"
 )
 
 var (
@@ -25,8 +26,9 @@ var (
 	roundMd       = float32(0.032)
 )
 
-func DrawCase(grid *Grid) {
-	panelRect := grid.Rectangle(1, grid.Columns, 1, grid.Rows)
+func DrawCase() {
+	grid := providers.GetContainer().Grid
+	panelRect := grid.Rectangle(1, grid.GetColumns(), 1, grid.GetRows())
 	shadowRect := panelRect
 	shadowRect.X += 16
 	shadowRect.Y += 16
@@ -37,7 +39,8 @@ func DrawCase(grid *Grid) {
 
 }
 
-func DrawScreen(grid *Grid) {
-	screen := grid.Rectangle(1, grid.Columns, 2, 6)
+func DrawScreen() {
+	grid := providers.GetContainer().Grid
+	screen := grid.Rectangle(1, grid.GetColumns(), 2, 6)
 	rl.DrawRectangleRec(screen, rl.Black)
 }

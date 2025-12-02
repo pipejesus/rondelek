@@ -24,6 +24,14 @@ func NewGrid(width, height float32, columns, rows int, paddingX, paddingY float3
 	}
 }
 
+func (g *Grid) GetColumns() int {
+	return g.Columns
+}
+
+func (g *Grid) GetRows() int {
+	return g.Rows
+}
+
 func (g *Grid) DrawDebug() {
 	innerWidth := g.Width - 2*g.PaddingX
 	innerHeight := g.Height - 2*g.PaddingY

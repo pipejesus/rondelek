@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 
+	"github.com/pipejesus/rondelek/providers"
 	ui "github.com/pipejesus/rondelek/ui"
 )
 
 func transitionPadIdleToPressed(p *ui.Pad, from, to ui.PressStatus) {
+	s := providers.GetContainer().Sampler
 	if p.Mode == ui.ModeRecord {
-		app.Sampler.Record()
+		s.Record()
 		return
 	}
 
@@ -16,16 +18,17 @@ func transitionPadIdleToPressed(p *ui.Pad, from, to ui.PressStatus) {
 		return
 	}
 
-	if err := app.Sampler.Samples[p.SampleIdx].Play(); err != nil {
+	if err := s.PlaySample(p.SampleIdx); err != nil {
 		fmt.Println("playback error:", err)
 	}
 }
 
 func transitionPadPressedToIdle(p *ui.Pad, from, to ui.PressStatus) {
+	s := providers.GetContainer().Sampler
 	if p.Mode == ui.ModeRecord {
 		fmt.Println("Stopping sound!")
-		sampleIdx := app.Sampler.StopRecording()
+		sampleIdx := s.StopRecording()
 		p.SetSample(sampleIdx)
-		app.Sampler.SaveCurrentSample()
+		s.SaveCurrentSample()
 	}
 }

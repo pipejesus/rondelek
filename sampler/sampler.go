@@ -1,6 +1,7 @@
 package sampler
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gordonklaus/portaudio"
@@ -52,6 +53,13 @@ func (s *Sampler) Quit() {
 	if err := portaudio.Terminate(); err != nil {
 		panic(err)
 	}
+}
+
+func (s *Sampler) PlaySample(idx int) error {
+	if idx < 0 || idx >= len(s.Samples) {
+		return fmt.Errorf("invalid sample index: %d", idx)
+	}
+	return s.Samples[idx].Play()
 }
 
 func (s *Sampler) Record() {

@@ -4,15 +4,14 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 	_ "github.com/octoper/go-ray"
 	"github.com/pipejesus/rondelek/experiments"
+	"github.com/pipejesus/rondelek/providers"
 	"github.com/pipejesus/rondelek/sampler"
 	ui "github.com/pipejesus/rondelek/ui"
 )
 
 type App struct {
-	Sampler *sampler.Sampler
-	Pads    []*ui.Pad
-	Grid    *ui.Grid
-	Conf    *Config
+	Pads []*ui.Pad
+	Conf *Config
 }
 
 var app *App
@@ -22,21 +21,28 @@ func init() {
 	conf.Load()
 
 	app = &App{
-		Sampler: sampler.NewSampler(),
-		Pads:    []*ui.Pad{},
+		Pads: []*ui.Pad{},
+		Conf: conf,
+	}
+
+	sampler := sampler.NewSampler()
+	sampler.Init()
+
+	providers.SetContainer(&providers.Container{
 		Grid: ui.NewGrid(
 			conf.Window.Width, conf.Window.Height,
 			conf.Layout.Columns, conf.Layout.Rows,
 			conf.Layout.PaddingX, conf.Layout.PaddingY,
 		),
-		Conf: conf,
-	}
+		Sampler: sampler,
+	})
 
-	app.Sampler.Init()
 }
 
 func main() {
-	defer app.Sampler.Quit()
+	sampler := providers.GetContainer().Sampler
+
+	defer sampler.Quit()
 
 	createMainPads()
 	createFunctionPads()
@@ -57,9 +63,9 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.White)
 
-		ui.DrawCase(app.Grid)
-		ui.DrawScreen(app.Grid)
-		// app.Grid.DrawDebug()
+		ui.DrawCase()
+		ui.DrawScreen()
+
 		for _, pad := range app.Pads {
 			pad.Update()
 		}
@@ -69,6 +75,8 @@ func main() {
 }
 
 func createMainPads() {
+	grid := providers.GetContainer().Grid
+
 	for _, padConf := range app.Conf.Pads {
 		if padConf.Type != "sample-pad" {
 			continue
@@ -79,7 +87,7 @@ func createMainPads() {
 		startRow := padConf.PadPosition.Row
 		endRow := startRow + padConf.PadSize.Height - 1
 
-		pad := ui.NewPad(app.Grid.Rectangle(startCol, endCol, startRow, endRow), padConf.Key, padConf.Label)
+		pad := ui.NewPad(grid.Rectangle(startCol, endCol, startRow, endRow), padConf.Key, padConf.Label)
 		pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, transitionPadIdleToPressed)
 		pad.RegisterTransition(ui.PadStatusPressed, ui.PadStatusIdle, transitionPadPressedToIdle)
 
@@ -88,7 +96,9 @@ func createMainPads() {
 }
 
 func createFunctionPads() {
-	pad := ui.NewPad(app.Grid.Rectangle(22, 23, 9, 9), rl.KeySpace, "*")
+	grid := providers.GetContainer().Grid
+
+	pad := ui.NewPad(grid.Rectangle(22, 23, 9, 9), rl.KeySpace, "*")
 	pad.RegisterTransition(ui.PadStatusIdle, ui.PadStatusPressed, func(p *ui.Pad, from, to ui.PressStatus) {
 		for _, pad := range app.Pads {
 			pad.ToggleMode()
