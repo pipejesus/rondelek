@@ -1,7 +1,8 @@
 # Rondelek TWST-1
 
 A sampler for kids built with Go and Raylib.
-:heart: With special dedication to Tobiasz, Wojtek, Szymek and Tymek 
+
+❤️ With special dedication to Tobiasz, Wojtek, Szymek and Tymek 
 
 In the making!
 
