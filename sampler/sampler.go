@@ -57,7 +57,7 @@ func (s *Sampler) Quit() {
 
 func (s *Sampler) PlaySample(idx int) error {
 	if idx < 0 || idx >= len(s.Samples) {
-		return fmt.Errorf("invalid sample index: %d", idx)
+		return fmt.Errorf("Zły indeks sampla: %d", idx)
 	}
 	return s.Samples[idx].Play()
 }

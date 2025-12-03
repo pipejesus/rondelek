@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -44,7 +44,7 @@ type PadSize struct {
 	Height int `json:"height"`
 }
 
-func NewConfig() *Config {
+func New() *Config {
 	return &Config{
 		Pads: []PadConfig{},
 	}
@@ -58,7 +58,7 @@ func (c *Config) Load() error {
 	exePath, err := os.Executable()
 	if err != nil {
 		if err2 := c.loadFromCurrentDir(); err2 != nil {
-			return fmt.Errorf("Error loading config file: cannot resolve the executable path (%v) and failed to load config from your current directory (%v)", err, err2)
+			return fmt.Errorf("cannot resolve the executable path (%v) and failed to load config from your current directory (%v)", err, err2)
 		}
 		return nil
 	}
@@ -70,7 +70,7 @@ func (c *Config) Load() error {
 	}
 
 	if err := c.loadFromCurrentDir(); err != nil {
-		return fmt.Errorf("Error loading config file: tried %s and working directory: %w", configPath, err)
+		return fmt.Errorf("tried %s and working directory: %w", configPath, err)
 	}
 	return nil
 }
@@ -78,7 +78,7 @@ func (c *Config) Load() error {
 func (c *Config) loadFromCurrentDir() error {
 	cwd, err := os.Getwd()
 	if err != nil {
-		return fmt.Errorf("Error loading config: failed to get current working directory: %w", err)
+		return fmt.Errorf("failed to get current working directory: %w", err)
 	}
 	path := filepath.Join(cwd, "config.json")
 	return c.loadFromFile(path)
@@ -87,10 +87,10 @@ func (c *Config) loadFromCurrentDir() error {
 func (c *Config) loadFromFile(path string) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return fmt.Errorf("Error loading config: failed to read config file at %s: %w", path, err)
+		return fmt.Errorf("failed to read config file at %s: %w", path, err)
 	}
 	if err := json.Unmarshal(data, c); err != nil {
-		return fmt.Errorf("Error loading config: failed to parse config JSON at %s: %w", path, err)
+		return fmt.Errorf("failed to parse config JSON at %s: %w", path, err)
 	}
 	return nil
 }

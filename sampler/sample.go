@@ -59,11 +59,11 @@ func NewSample(fileName string) *Sample {
 
 func (t *Sample) Play() error {
 	if len(t.Buf) == 0 {
-		return fmt.Errorf("sample buffer is empty")
+		return fmt.Errorf("Bufor sampla jest pusty")
 	}
 
 	if !rl.IsAudioDeviceReady() {
-		return fmt.Errorf("raylib audio device is not initialized")
+		return fmt.Errorf("Błąd: Dźwięk Raylib nie jest dostępny!")
 	}
 
 	if !t.soundLoaded || t.cachedSampleCount != len(t.Buf) {
@@ -75,13 +75,12 @@ func (t *Sample) Play() error {
 	rl.PlaySound(t.sound)
 	t.Status = SampleStatusPlaying
 
-	// chekk for sound completion in a separate goroutine
+	// @todo should use mutex to protect Status?
 	go func() {
 		for rl.IsSoundPlaying(t.sound) {
-			fmt.Println("still playing")
+
 		}
 		t.Status = SampleStatusIdle
-		fmt.Println("playback finished")
 	}()
 
 	return nil
@@ -89,7 +88,7 @@ func (t *Sample) Play() error {
 
 func (t *Sample) loadSoundFromBuffer() error {
 	if len(t.Buf) == 0 {
-		return fmt.Errorf("sample buffer is empty")
+		return fmt.Errorf("Błąd ładowania dźwięku z bufora: bufor jest pusty")
 	}
 
 	if t.soundLoaded {
@@ -104,7 +103,7 @@ func (t *Sample) loadSoundFromBuffer() error {
 
 	wave := rl.LoadWaveFromMemory(".wav", waveBytes, int32(len(waveBytes)))
 	if wave.FrameCount == 0 {
-		return fmt.Errorf("failed to build wave data for %s", t.FileName)
+		return fmt.Errorf("Nie udało się załadować audio WAV z danych %s", t.FileName)
 	}
 
 	t.sound = rl.LoadSoundFromWave(wave)

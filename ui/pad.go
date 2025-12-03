@@ -5,12 +5,13 @@ import (
 )
 
 type PressStatus int
-type Mode int
 
 const (
 	PadStatusIdle PressStatus = iota
 	PadStatusPressed
 )
+
+type Mode int
 
 const (
 	ModePlay Mode = iota
@@ -50,7 +51,7 @@ func (p *Pad) Draw() {
 	shadow.Y += 4
 
 	if p.Status == PadStatusIdle {
-		rl.DrawRectangleRounded(shadow, 0.08, 16, padShadowColor)
+		rl.DrawRectangleRounded(shadow, 0.08, 16, Theme.PadShadow)
 	}
 
 	if p.Status == PadStatusPressed {
@@ -58,19 +59,23 @@ func (p *Pad) Draw() {
 		btn.Y += 2
 	}
 
-	var fill, labelColor = padFillPlay, padLabelPlay
+	var fill, labelColor rl.Color
 	if p.Mode == ModeRecord {
-		fill, labelColor = padFillRecord, padLabelRecord
+		fill = Theme.PadFillRecord
+		labelColor = Theme.PadLabelRecord
+	} else {
+		fill = Theme.PadFillPlay
+		labelColor = Theme.PadLabelPlay
 	}
 
 	rl.DrawRectangleRounded(btn, 0.08, 16, fill)
-	rl.DrawRectangleRoundedLines(btn, 0.08, 16, panelStroke)
+	rl.DrawRectangleRoundedLines(btn, 0.08, 16, Theme.PanelStroke)
 
 	rl.DrawText(p.Label, int32(btn.X+12), int32(btn.Y+12), 20, labelColor)
 
-	ledColor := ledColorEmpty
+	ledColor := Theme.LEDEmpty
 	if p.HasSample() {
-		ledColor = ledColorFull
+		ledColor = Theme.LEDFull
 	}
 
 	rl.DrawCircle(int32(btn.X+btn.Width-20), int32(btn.Y+20), 6, ledColor)
@@ -93,13 +98,10 @@ func (p *Pad) ToggleMode() {
 }
 
 func (p *Pad) Update() {
-	p.Draw()
-
 	wasPressed := p.Status == PadStatusPressed
 	isInside := rl.CheckCollisionPointRec(rl.GetMousePosition(), p.Rect)
 
 	isHeldByMouse := isInside && rl.IsMouseButtonDown(rl.MouseButtonLeft)
-
 	isHeldByKeyboard := rl.IsKeyDown(p.Key)
 	isHeld := isHeldByMouse || isHeldByKeyboard
 
