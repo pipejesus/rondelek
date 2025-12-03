@@ -4,6 +4,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+// A new struct for rendering passive UI elements
+// subject to change, hah, but still better than what was before.
 type Renderer struct {
 	grid *Grid
 }

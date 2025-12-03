@@ -74,6 +74,9 @@ func (a *App) Run() error {
 
 func (a *App) update() {
 	experiments.HandleWindowDragging()
+	if rl.IsKeyPressed(rl.KeyM) {
+		rl.TakeScreenshot("screenshot.png")
+	}
 	for _, pad := range a.pads {
 		pad.Update()
 	}
